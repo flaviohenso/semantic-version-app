@@ -25,8 +25,10 @@ public class SemanticVersionApplication {
     }
 
     @GetMapping("/version")
-    public String version() {
-        return "Current Version: 2.0.0";
+    public Map<String, String> version() {
+        Map<String, String> versionInfo = new HashMap<>();
+        versionInfo.put("version", version);
+        return versionInfo;
     }
 
     @GetMapping("/health")
