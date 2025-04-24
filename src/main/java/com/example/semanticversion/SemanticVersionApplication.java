@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SemanticVersionApplication {
 
-    @Value("${spring.application.version:1.0.0}")
+    @Value("${spring.application.version}")
     private String version;
 
     public static void main(String[] args) {
@@ -19,7 +19,7 @@ public class SemanticVersionApplication {
 
     @GetMapping("/version")
     public String version() {
-        return String.format("Semantic Version App - v%s", version);
+        return String.format("Semantic Version App - %s", version);
     }
 
     @GetMapping("/health")
