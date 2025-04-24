@@ -17,4 +17,9 @@ public class SemanticVersionApplication {
     public String version() {
         return "Semantic Version App - v1.0.0";
     }
+
+    @GetMapping("/health")
+    public String health() {
+        return "Aplicação está funcionando normalmente!";
+    }
 }
