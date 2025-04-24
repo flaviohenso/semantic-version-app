@@ -19,17 +19,19 @@ public class SemanticVersionApplication {
         SpringApplication.run(SemanticVersionApplication.class, args);
     }
 
+    @GetMapping("/")
+    public String home() {
+        return "Semantic Version App is running!";
+    }
+
     @GetMapping("/version")
-    public Map<String, String> version() {
-        Map<String, String> versionInfo = new HashMap<>();
-        versionInfo.put("application", "Semantic Version App");
-        versionInfo.put("version", version);
-        return versionInfo;
+    public String version() {
+        return "Current Version: 2.0.0";
     }
 
     @GetMapping("/health")
     public String health() {
-        return "Aplicação está funcionando normalmente!";
+        return "Application is healthy!";
     }
 
     @GetMapping("/system")
