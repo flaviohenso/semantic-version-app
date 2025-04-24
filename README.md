@@ -166,3 +166,80 @@ O projeto usa o JGitVer para gerenciar o versionamento semântico automaticament
    - Use sempre o prefixo 'v': `v1.0.0`
    - Crie tags apenas para releases estáveis
    - Mantenha as tags sincronizadas com o remoto 
+
+## Processo de Fechamento de Versão
+
+Para criar uma nova versão estável do projeto, siga estes passos:
+
+### Preparação
+
+1. **Verifique o Estado do Código**:
+   - Certifique-se que todas as alterações desejadas estão commitadas
+   - Confirme que todos os testes estão passando
+   - Verifique se você está na branch principal (main/master)
+   ```bash
+   git status  # Deve mostrar working tree clean
+   git branch  # Deve mostrar que você está em main/master
+   ```
+
+2. **Determine a Nova Versão**:
+   - Verifique a versão atual:
+   ```bash
+   mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+   ```
+   - Decida a nova versão baseado nas mudanças:
+     - MAJOR (2.0.0): Mudanças incompatíveis com versões anteriores
+     - MINOR (1.1.0): Novas funcionalidades compatíveis
+     - PATCH (1.0.1): Correções de bugs
+
+### Criação da Release
+
+1. **Crie e Anote a Tag**:
+   ```bash
+   # Substitua X.Y.Z pela versão escolhida
+   git tag -a vX.Y.Z -m "release: versão X.Y.Z
+
+   Principais alterações:
+   - Lista de alterações principais
+   - Novas funcionalidades
+   - Correções importantes"
+   ```
+
+2. **Envie as Alterações**:
+   ```bash
+   # Envie os commits (se houver)
+   git push
+
+   # Envie a tag
+   git push origin vX.Y.Z
+   ```
+
+3. **Verifique a Release**:
+   ```bash
+   # Confirme que a tag foi criada
+   git tag -l
+
+   # Verifique a nova versão
+   mvn clean install
+   mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+   ```
+
+### Pós-Release
+
+1. **Atualize a Documentação**:
+   - Atualize o CHANGELOG.md (se existir)
+   - Documente quaisquer mudanças importantes
+   - Atualize guias de migração se necessário
+
+2. **Comunique a Equipe**:
+   - Informe sobre a nova versão
+   - Destaque mudanças importantes
+   - Forneça instruções de atualização se necessário
+
+### Notas Importantes
+
+- Use tags apenas para versões estáveis e testadas
+- Sempre inclua o prefixo 'v' nas tags (exemplo: v1.2.0)
+- Inclua uma mensagem descritiva na tag com as principais mudanças
+- Mantenha as tags sincronizadas entre todos os ambientes
+- Commits após uma tag gerarão versões snapshot (exemplo: 1.2.0-1-gXXXXXXX) 
