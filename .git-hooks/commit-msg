@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Caminho para o arquivo com a mensagem do commit
+commit_msg_file=$1
+# Lê a mensagem do commit
+commit_msg=$(cat $commit_msg_file)
+
+# Padrões de commit válidos
+commit_pattern="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .+"
+breaking_pattern="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)!(\(.+\))?: .+"
+
+# Verifica se a mensagem segue o padrão
+if [[ ! $commit_msg =~ $commit_pattern ]] && [[ ! $commit_msg =~ $breaking_pattern ]] && [[ ! $commit_msg =~ "^Merge" ]]; then
+    echo "Erro: Mensagem de commit inválida"
+    echo "A mensagem deve seguir o padrão: tipo(escopo opcional): descrição"
+    echo ""
+    echo "Tipos permitidos:"
+    echo "  feat     : Nova funcionalidade"
+    echo "  fix      : Correção de bug"
+    echo "  docs     : Documentação"
+    echo "  style    : Formatação"
+    echo "  refactor : Refatoração"
+    echo "  perf     : Performance"
+    echo "  test     : Testes"
+    echo "  build    : Build"
+    echo "  ci       : Integração Contínua"
+    echo "  chore    : Tarefas gerais"
+    echo "  revert   : Reverte um commit"
+    echo ""
+    echo "Breaking changes:"
+    echo "  feat!    : Nova funcionalidade com breaking change"
+    echo "  fix!     : Correção com breaking change"
+    echo ""
+    echo "Exemplos:"
+    echo "  feat: adiciona novo endpoint"
+    echo "  fix(auth): corrige validação de token"
+    echo "  feat!: nova API de autenticação"
+    echo ""
+    echo "Sua mensagem: $commit_msg"
+    exit 1
+fi 
