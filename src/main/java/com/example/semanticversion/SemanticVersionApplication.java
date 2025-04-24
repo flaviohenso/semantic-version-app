@@ -20,8 +20,11 @@ public class SemanticVersionApplication {
     }
 
     @GetMapping("/version")
-    public String version() {
-        return String.format("Semantic Version App - %s", version);
+    public Map<String, String> version() {
+        Map<String, String> versionInfo = new HashMap<>();
+        versionInfo.put("application", "Semantic Version App");
+        versionInfo.put("version", version);
+        return versionInfo;
     }
 
     @GetMapping("/health")
