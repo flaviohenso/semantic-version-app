@@ -44,4 +44,14 @@ public class SemanticVersionApplication {
         info.put("os.name", System.getProperty("os.name"));
         return info;
     }
+
+    @GetMapping("/metrics")
+    public Map<String, Object> metrics() {
+        Map<String, Object> metrics = new HashMap<>();
+        metrics.put("memory.free", Runtime.getRuntime().freeMemory());
+        metrics.put("memory.total", Runtime.getRuntime().totalMemory());
+        metrics.put("memory.max", Runtime.getRuntime().maxMemory());
+        metrics.put("processors", Runtime.getRuntime().availableProcessors());
+        return metrics;
+    }
 }
