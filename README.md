@@ -227,9 +227,9 @@ Para criar uma nova versão estável do projeto, siga estes passos:
 ### Pós-Release
 
 1. **Atualize a Documentação**:
-   - Atualize o CHANGELOG.md (se existir)
-   - Documente quaisquer mudanças importantes
+   - Documente quaisquer mudanças importantes na descrição da tag
    - Atualize guias de migração se necessário
+   - Mantenha o README atualizado com novas funcionalidades
 
 2. **Comunique a Equipe**:
    - Informe sobre a nova versão
