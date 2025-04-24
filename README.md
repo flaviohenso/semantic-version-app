@@ -4,27 +4,149 @@ Esta aplicação demonstra a implementação de versionamento semântico automat
 
 ## Configuração do Versionamento Semântico
 
-O projeto utiliza três plugins principais para gerenciar o versionamento semântico de forma automática e confiável:
+O projeto utiliza o JGitVer para gerenciar o versionamento semântico de forma automática, calculando as versões com base no histórico do Git e nas mensagens de commit.
 
-### 1. JGitVer Plugin
+### Configuração do JGitVer
 
-O JGitVer é responsável pelo cálculo automático das versões baseado no histórico do Git.
+1. **Configuração no pom.xml**:
 
 ```xml
 <plugin>
     <groupId>fr.brouillard.oss</groupId>
     <artifactId>jgitver-maven-plugin</artifactId>
     <version>1.9.0</version>
+    <configuration>
+        <strategy>PATTERN</strategy>
+        <useGitCommitId>true</useGitCommitId>
+        <gitCommitIdLength>8</gitCommitIdLength>
+        <nonQualifierBranches>main,master</nonQualifierBranches>
+    </configuration>
 </plugin>
 ```
 
-Configurações principais:
-- `strategy`: PATTERN - Usa padrão de versionamento semântico
-- `policy`: LATEST_TAG - Baseia-se na última tag para cálculo da versão
-- `autoIncrementPatch`: true - Incrementa automaticamente versão patch
-- `useCommitDistance`: true - Considera distância entre commits
-- `useGitCommitId`: true - Inclui ID do commit em versões snapshot
-- `nonQualifierBranches`: main,master - Branches principais sem qualificadores
+2. **Configuração do JGitVer (.mvn/jgitver.config.xml)**:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://jgitver.github.io/maven/configuration/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jgitver.github.io/maven/configuration/1.1.0 https://jgitver.github.io/maven/configuration/jgitver-configuration-v1_1_0.xsd">
+    <strategy>PATTERN</strategy>
+    <useGitCommitId>true</useGitCommitId>
+    <gitCommitIdLength>8</gitCommitIdLength>
+    <nonQualifierBranches>main,master</nonQualifierBranches>
+    <regexVersionTag>v(.*)</regexVersionTag>
+</configuration>
+```
+
+### Como Funciona o Versionamento Automático
+
+O JGitVer calcula automaticamente a versão do projeto baseado em:
+
+1. **Tags do Git**: 
+   - Usa tags com prefixo 'v' (exemplo: v1.0.0)
+   - A última tag é usada como base para o cálculo da próxima versão
+
+2. **Mensagens de Commit**:
+   - `feat:` incrementa a versão MINOR (1.0.0 -> 1.1.0)
+   - `fix:` incrementa a versão PATCH (1.0.0 -> 1.0.1)
+   - `feat!:` ou `BREAKING CHANGE:` incrementa a versão MAJOR (1.0.0 -> 2.0.0)
+
+3. **Formato da Versão**:
+   - Release: `MAJOR.MINOR.PATCH` (exemplo: 1.2.3)
+   - Snapshot: `MAJOR.MINOR.PATCH-<distância>-g<commit>` (exemplo: 1.2.3-2-g1234567)
+
+### Processo de Desenvolvimento
+
+1. **Desenvolvimento Normal**:
+   ```bash
+   # Faça suas alterações
+   git add .
+   git commit -m "feat: nova funcionalidade"
+   mvn clean install  # A versão será calculada automaticamente
+   ```
+
+2. **Criando uma Release**:
+   ```bash
+   # Commit suas alterações
+   git commit -m "feat: nova funcionalidade"
+   
+   # Crie uma tag
+   git tag -a v1.2.0 -m "versão 1.2.0"
+   
+   # Push das alterações e tags
+   git push && git push --tags
+   ```
+
+3. **Verificando a Versão Atual**:
+   ```bash
+   mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+   ```
+
+### Exemplos Práticos
+
+1. **Adicionando Nova Funcionalidade**:
+   ```bash
+   git commit -m "feat: adiciona autenticação OAuth"
+   # Versão incrementará MINOR: 1.0.0 -> 1.1.0
+   ```
+
+2. **Corrigindo um Bug**:
+   ```bash
+   git commit -m "fix: corrige validação de token"
+   # Versão incrementará PATCH: 1.1.0 -> 1.1.1
+   ```
+
+3. **Mudança que Quebra Compatibilidade**:
+   ```bash
+   git commit -m "feat!: nova API incompatível"
+   # Versão incrementará MAJOR: 1.1.1 -> 2.0.0
+   ```
+
+### Troubleshooting
+
+1. **Versão Não Atualiza**:
+   - Verifique se o arquivo `.mvn/jgitver.config.xml` existe e está correto
+   - Limpe o cache do Maven: `mvn clean`
+   - Verifique se as tags do Git estão corretas: `git tag -l`
+
+2. **Erro no Cálculo da Versão**:
+   ```bash
+   # Verifique as tags
+   git tag -l
+   
+   # Verifique o histórico de commits
+   git log --oneline
+   
+   # Limpe o cache do Maven
+   mvn clean
+   ```
+
+3. **Conflitos de Versão**:
+   - Certifique-se de que todas as tags estão sincronizadas: `git fetch --tags`
+   - Verifique se não há tags duplicadas: `git tag -l | sort -V`
+
+### Boas Práticas
+
+1. **Mensagens de Commit**:
+   - Use os tipos corretos (feat, fix, etc.)
+   - Seja claro nas descrições
+   - Indique breaking changes com `!` ou `BREAKING CHANGE:`
+
+2. **Tags**:
+   - Use sempre o prefixo 'v': `v1.0.0`
+   - Crie tags apenas para releases estáveis
+   - Mantenha as tags sincronizadas com o remoto
+
+3. **Branches**:
+   - Mantenha o `main/master` sempre estável
+   - Use branches de feature para desenvolvimento
+   - Faça merge apenas de código testado
+
+4. **Builds**:
+   - Sempre execute `mvn clean install` antes de commits importantes
+   - Verifique a versão gerada após o build
+   - Mantenha o histórico de commits limpo e organizado
 
 ## Validação de Commits com Git Hooks
 
