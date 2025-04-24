@@ -13,7 +13,7 @@
 
     <groupId>com.example</groupId>
     <artifactId>semantic-version-app</artifactId>
-    <version>0.0.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>semantic-version-app</name>
     <description>Aplicação demonstrando versionamento semântico automatizado</description>
 
@@ -42,17 +42,27 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Plugin para processar recursos com as variáveis do Maven -->
+            <!-- JGitVer Plugin para versionamento automático -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
+                <groupId>fr.brouillard.oss</groupId>
+                <artifactId>jgitver-maven-plugin</artifactId>
+                <version>1.9.0</version>
                 <configuration>
-                    <delimiters>
-                        <delimiter>@</delimiter>
-                    </delimiters>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <strategy>PATTERN</strategy>
+                    <policy>LATEST_TAG</policy>
+                    <autoIncrementPatch>true</autoIncrementPatch>
+                    <useCommitDistance>true</useCommitDistance>
+                    <useGitCommitId>true</useGitCommitId>
+                    <useSnapshot>true</useSnapshot>
+                    <nonQualifierBranches>main,master</nonQualifierBranches>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jgitver</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Maven Release Plugin -->
