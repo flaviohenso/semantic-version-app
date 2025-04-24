@@ -13,7 +13,7 @@
 
     <groupId>com.example</groupId>
     <artifactId>semantic-version-app</artifactId>
-    <version>0.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <name>semantic-version-app</name>
     <description>Aplicação demonstrando versionamento semântico automatizado</description>
 
@@ -21,6 +21,7 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <revision>0.0.0-SNAPSHOT</revision>
     </properties>
 
     <dependencies>
@@ -52,6 +53,22 @@
                         <delimiter>@</delimiter>
                     </delimiters>
                     <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+
+            <!-- JGitver Maven Plugin para versionamento semântico automático -->
+            <plugin>
+                <groupId>fr.brouillard.oss</groupId>
+                <artifactId>jgitver-maven-plugin</artifactId>
+                <version>1.9.0</version>
+                <configuration>
+                    <strategy>PATTERN</strategy>
+                    <policy>LATEST</policy>
+                    <autoIncrementPatch>true</autoIncrementPatch>
+                    <useCommitDistance>true</useCommitDistance>
+                    <useGitCommitId>true</useGitCommitId>
+                    <useSnapshot>true</useSnapshot>
+                    <nonQualifierBranches>main,master</nonQualifierBranches>
                 </configuration>
             </plugin>
 
