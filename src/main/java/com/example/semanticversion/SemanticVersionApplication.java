@@ -21,7 +21,7 @@ public class SemanticVersionApplication {
 
     @GetMapping("/")
     public String home() {
-        return "Semantic Version App is running!";
+        return "Semantic Version App is running! Welcome!";
     }
 
     @GetMapping("/version")
