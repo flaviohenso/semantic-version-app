@@ -34,4 +34,4 @@ target/
 
 # Misc
 *.swp
-.DS_Store 
+.DS_Store .history/
