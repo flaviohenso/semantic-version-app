@@ -2,13 +2,33 @@
 
 Esta aplicação demonstra a implementação de versionamento semântico automatizado usando Spring Boot e Java 21.
 
+## Requisitos do Ambiente
+
+Antes de começar, certifique-se de ter instalado:
+
+1. **Java Development Kit (JDK)**:
+   - Versão: JDK 21 ou superior
+   - Verifique a instalação: `java -version`
+
+2. **Maven**:
+   - Versão: 3.8.0 ou superior
+   - Verifique a instalação: `mvn -version`
+
+3. **Git**:
+   - Versão: 2.34.0 ou superior
+   - Verifique a instalação: `git --version`
+
+4. **Sistema Operacional**:
+   - Linux, Windows (com WSL) ou macOS
+   - Se estiver usando Windows, recomendamos usar o WSL2 com Ubuntu
+
 ## Quick Start para Novos Desenvolvedores
 
 Para começar a trabalhar com este projeto, siga estes passos:
 
 1. **Clone o Repositório**:
    ```bash
-   git clone https://github.com/seu-usuario/semantic-version-app.git
+   git clone https://github.com/flaviohenso/semantic-version-app.git
    cd semantic-version-app
    ```
 
@@ -25,7 +45,183 @@ Para começar a trabalhar com este projeto, siga estes passos:
    ```bash
    # Verifica se o hook está instalado
    ls -la .git/hooks/commit-msg
+   
+   # Teste o hook com um commit
+   git commit -m "test: verificando configuração do hook"
    ```
+
+## Gerenciamento de Versão com JGitVer
+
+O projeto utiliza o JGitVer para gerenciamento automático de versões. O JGitVer analisa o histórico do Git e as tags para determinar a versão atual do projeto.
+
+### Estrutura de Arquivos Importantes
+
+1. **Configuração do JGitVer**:
+   - Localização: `.mvn/jgitver.config.xml`
+   - Propósito: Define a estratégia e regras de versionamento
+
+2. **Script de Versionamento**:
+   - Localização: `auto-version.sh`
+   - Propósito: Automatiza a criação de novas versões
+   - Uso: `./auto-version.sh [major|minor|patch]`
+
+### Como Gerar uma Nova Versão
+
+1. **Preparação**:
+   ```bash
+   # Certifique-se de estar na branch main
+   git checkout main
+   
+   # Atualize o repositório local
+   git pull origin main
+   
+   # Verifique a versão atual
+   mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+   ```
+
+2. **Execução do Script**:
+   ```bash
+   # Torne o script executável (se ainda não estiver)
+   chmod +x scripts/auto-version.sh
+   
+   # Execute o script (ele determinará automaticamente o tipo de versão baseado nos commits)
+   ./scripts/auto-version.sh
+   ```
+
+   O script analisará automaticamente os commits desde a última tag e determinará o tipo de incremento:
+   - Se encontrar commits com `feat!:` ou `BREAKING CHANGE:` -> incremento MAJOR
+   - Se encontrar commits com `feat:` -> incremento MINOR
+   - Para outros tipos de commits -> incremento PATCH
+
+3. **Verificação**:
+   ```bash
+   # Confirme a nova versão
+   mvn clean install
+   
+   # Verifique a versão gerada
+   mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+   ```
+
+### Troubleshooting
+
+1. **Erro de Permissão no Script**:
+   ```bash
+   # Solução: Ajuste as permissões
+   chmod +x auto-version.sh
+   ```
+
+2. **Versão Não Atualiza**:
+   ```bash
+   # Limpe o cache do Maven
+   mvn clean
+   
+   # Remova a pasta target
+   rm -rf target/
+   
+   # Reconstrua o projeto
+   mvn clean install
+   ```
+
+3. **Conflitos de Branch**:
+   ```bash
+   # Verifique se está na branch correta
+   git branch
+   
+   # Atualize a branch local
+   git pull origin main
+   ```
+
+4. **Erro no JGitVer**:
+   ```bash
+   # Verifique o arquivo de configuração
+   cat .mvn/jgitver.config.xml
+   
+   # Regenere o arquivo se necessário
+   # (consulte a documentação para o conteúdo correto)
+   ```
+
+### Boas Práticas
+
+1. **Antes de Gerar Nova Versão**:
+   - Certifique-se que todos os testes passam
+   - Verifique se não há commits pendentes
+   - Confirme que está na branch principal
+   - Atualize seu repositório local
+
+2. **Mensagens de Commit**:
+   - Use os tipos corretos (feat, fix, docs, etc.)
+   - Seja claro e conciso
+   - Adicione breaking change footer quando necessário
+
+3. **Gestão de Branches**:
+   - Mantenha a branch main sempre estável
+   - Use feature branches para desenvolvimento
+   - Faça merge apenas após code review
+
+4. **Documentação**:
+   - Atualize o CHANGELOG.md
+   - Documente breaking changes
+   - Mantenha exemplos atualizados
+
+### Exemplos Práticos
+
+1. **Lançando uma Nova Feature**:
+   ```bash
+   # Desenvolvimento
+   git checkout -b feature/nova-funcionalidade
+   # ... desenvolvimento ...
+   git commit -m "feat: adiciona nova funcionalidade"
+   
+   # Merge na main
+   git checkout main
+   git merge feature/nova-funcionalidade
+   
+   # Geração da versão
+   ./auto-version.sh minor
+   ```
+
+2. **Correção de Bug**:
+   ```bash
+   # Correção
+   git checkout -b fix/bug-critico
+   # ... correção ...
+   git commit -m "fix: corrige bug crítico"
+   
+   # Merge e versão
+   git checkout main
+   git merge fix/bug-critico
+   ./auto-version.sh patch
+   ```
+
+3. **Breaking Change**:
+   ```bash
+   git checkout -b feature/mudanca-api
+   # ... mudanças ...
+   git commit -m "feat!: refatora API completamente
+   
+   BREAKING CHANGE: Nova estrutura de API incompatível"
+   
+   git checkout main
+   git merge feature/mudanca-api
+   ./auto-version.sh major
+   ```
+
+## Notas Adicionais
+
+1. **Ambiente Windows**:
+   - Use WSL2 para melhor compatibilidade
+   - Execute todos os comandos no terminal do WSL
+   - Mantenha o Git configurado com LF (não CRLF)
+
+2. **Integração Contínua**:
+   - O JGitVer funciona automaticamente no CI
+   - Versões de snapshot incluem metadata do commit
+   - Tags são criadas apenas em releases oficiais
+
+3. **Manutenção**:
+   - Mantenha as dependências atualizadas
+   - Revise periodicamente as configurações
+   - Monitore o tamanho do histórico Git
 
 ## Padrões de Commit e Versionamento
 
