@@ -22,6 +22,4 @@
             </transformations>
         </branchPolicy>
     </branchPolicies>
-    <versionPattern>[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?</versionPattern>
-    <tagVersionPattern>v([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?)</tagVersionPattern>
 </configuration> 
