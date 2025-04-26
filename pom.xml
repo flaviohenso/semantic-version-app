@@ -56,20 +56,19 @@
                 </configuration>
             </plugin>
 
-            <!-- JGitver Maven Plugin para versionamento semântico automático -->
+            <!-- JGitver Maven Plugin -->
             <plugin>
                 <groupId>fr.brouillard.oss</groupId>
                 <artifactId>jgitver-maven-plugin</artifactId>
                 <version>1.9.0</version>
-                <configuration>
-                    <strategy>PATTERN</strategy>
-                    <policy>LATEST</policy>
-                    <autoIncrementPatch>true</autoIncrementPatch>
-                    <useCommitDistance>true</useCommitDistance>
-                    <useGitCommitId>true</useGitCommitId>
-                    <useSnapshot>true</useSnapshot>
-                    <nonQualifierBranches>main,master</nonQualifierBranches>
-                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jgitver</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Maven Release Plugin -->

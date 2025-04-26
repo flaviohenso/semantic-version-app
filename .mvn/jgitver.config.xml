@@ -7,4 +7,21 @@
     <gitCommitIdLength>8</gitCommitIdLength>
     <nonQualifierBranches>main,master</nonQualifierBranches>
     <regexVersionTag>v(.*)</regexVersionTag>
+    <branchPolicies>
+        <branchPolicy>
+            <pattern>main</pattern>
+            <transformations>
+                <transformation>IGNORE</transformation>
+            </transformations>
+        </branchPolicy>
+        <branchPolicy>
+            <pattern>feature/.*</pattern>
+            <transformations>
+                <transformation>REMOVE_UNEXPECTED_CHARS</transformation>
+                <transformation>LOWERCASE</transformation>
+            </transformations>
+        </branchPolicy>
+    </branchPolicies>
+    <versionPattern>[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?</versionPattern>
+    <tagVersionPattern>v([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?)</tagVersionPattern>
 </configuration> 
