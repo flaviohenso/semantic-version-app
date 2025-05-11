@@ -439,3 +439,5 @@ Para criar uma nova versão estável do projeto, siga estes passos:
 - Inclua uma mensagem descritiva na tag com as principais mudanças
 - Mantenha as tags sincronizadas entre todos os ambientes
 - Commits após uma tag gerarão versões snapshot (exemplo: 1.2.0-1-gXXXXXXX) 
+
+#comentario de teste
